@@ -1,5 +1,6 @@
 package me.bossm0n5t3r.blog.article.domain
 
+import me.bossm0n5t3r.blog.article.application.dto.CreateArticleDto
 import me.bossm0n5t3r.blog.article.application.dto.UpdateArticleDto
 import me.bossm0n5t3r.blog.common.domain.BaseEntity
 import javax.persistence.Column
@@ -21,6 +22,11 @@ class Article(
     @Column(name = "recommend", nullable = false)
     var recommend: Int = 0,
 ) : BaseEntity<Long>() {
+    constructor(dto: CreateArticleDto): this(
+        subject = dto.subject,
+        content = dto.content
+    )
+
     fun updateArticle(updateArticleDto: UpdateArticleDto) {
         updateArticleDto.subject?.let { this.subject = it }
         updateArticleDto.content?.let { this.content = it }
