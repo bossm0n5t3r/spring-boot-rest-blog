@@ -102,13 +102,14 @@ internal class ArticleServiceTest {
     fun should_throw_ResourceNotFoundException_when_new_subject_is_blank() {
         // given
         val id = faker.number().randomNumber()
-        val subject = " ".repeat((1..9).random())
-        val content = faker.lorem().characters()
-        every { articleRepository.findById(id) } returns Optional.empty()
+        every { articleRepository.findById(id) } returns
+                Optional.of(Article(faker.lorem().characters(), faker.lorem().characters()))
+        val newSubject = " ".repeat((1..9).random())
+        val newContent = faker.lorem().characters()
 
         // when, then
         assertThrows<ResourceNotFoundException> {
-            sut.updateArticle(UpdateArticleDto(id, subject, content))
+            sut.updateArticle(UpdateArticleDto(id, newSubject, newContent))
         }
             .also {
                 assertThat(it.message).isEqualTo(ErrorMessage.SUBJECT_IS_BLANK.message)
