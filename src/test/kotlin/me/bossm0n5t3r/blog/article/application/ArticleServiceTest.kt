@@ -9,6 +9,7 @@ import me.bossm0n5t3r.blog.article.application.dto.UpdateArticleDto
 import me.bossm0n5t3r.blog.article.domain.Article
 import me.bossm0n5t3r.blog.article.domain.ArticleRepository
 import me.bossm0n5t3r.blog.common.CommonUtil
+import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -31,7 +32,7 @@ internal class ArticleServiceTest {
             sut.createArticle(blankSubjectDto)
         }
             .also {
-                assertThat(it.message).isEqualTo("subject가 비어있습니다.")
+                assertThat(it.message).isEqualTo(ErrorMessage.SUBJECT_IS_BLANK.message)
             }
         verify(exactly = 0) { articleRepository.save(any()) }
     }
@@ -46,7 +47,7 @@ internal class ArticleServiceTest {
             sut.createArticle(emptyContentDto)
         }
             .also {
-                assertThat(it.message).isEqualTo("content가 비어있습니다.")
+                assertThat(it.message).isEqualTo(ErrorMessage.CONTENT_IS_BLANK.message)
             }
         verify(exactly = 0) { articleRepository.save(any()) }
     }
@@ -93,7 +94,7 @@ internal class ArticleServiceTest {
             sut.updateArticle(UpdateArticleDto(id, subject, content))
         }
             .also {
-                assertThat(it.message).isEqualTo("해당 id의 article이 없습니다.")
+                assertThat(it.message).isEqualTo(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
             }
     }
 
@@ -110,7 +111,7 @@ internal class ArticleServiceTest {
             sut.updateArticle(UpdateArticleDto(id, subject, content))
         }
             .also {
-                assertThat(it.message).isEqualTo("새로운 subject가 비어있습니다.")
+                assertThat(it.message).isEqualTo(ErrorMessage.SUBJECT_IS_BLANK.message)
             }
     }
 
