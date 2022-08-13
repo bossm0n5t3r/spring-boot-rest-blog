@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  spring_batch_database:
+    container_name: blog_database
+    image: mariadb
+    environment:
+      MARIADB_DATABASE: spring_boot_rest_blog_dev
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_ROOT_HOST: '%'
+    ports:
+      - "33062:3306"
