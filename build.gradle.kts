@@ -30,6 +30,18 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mariadb")
+
+    // h2
+    testImplementation("com.h2database:h2")
+
+    // MockK
+    testImplementation("io.mockk:mockk:1.12.5")
+
+    // Java Faker
+    testImplementation("com.github.javafaker:javafaker:1.0.2") {
+        // https://github.com/DiUS/java-faker/issues/733
+        exclude(group = "org.yaml", module = "snakeyaml")
+    }
 }
 
 dependencyManagement {
