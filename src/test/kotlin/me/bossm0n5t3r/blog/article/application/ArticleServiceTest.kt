@@ -10,6 +10,7 @@ import me.bossm0n5t3r.blog.article.domain.Article
 import me.bossm0n5t3r.blog.article.domain.ArticleRepository
 import me.bossm0n5t3r.blog.common.CommonUtil
 import me.bossm0n5t3r.blog.common.exception.ErrorMessage
+import me.bossm0n5t3r.blog.common.exception.InvalidException
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -23,12 +24,12 @@ internal class ArticleServiceTest {
     private val faker = CommonUtil.faker
 
     @Test
-    fun should_throw_ResourceNotFoundException_if_subject_is_blank() {
+    fun should_throw_InvalidException_if_subject_is_blank() {
         // given
         val blankSubjectDto = CreateArticleDto(" ".repeat((1..9).random()), faker.lorem().characters())
 
         // when, then
-        assertThrows<ResourceNotFoundException> {
+        assertThrows<InvalidException> {
             sut.createArticle(blankSubjectDto)
         }
             .also {
@@ -38,12 +39,12 @@ internal class ArticleServiceTest {
     }
 
     @Test
-    fun should_throw_ResourceNotFoundException_if_content_is_empty() {
+    fun should_throw_InvalidException_if_content_is_empty() {
         // given
         val emptyContentDto = CreateArticleDto(faker.lorem().characters(), "")
 
         // when, then
-        assertThrows<ResourceNotFoundException> {
+        assertThrows<InvalidException> {
             sut.createArticle(emptyContentDto)
         }
             .also {
@@ -71,18 +72,33 @@ internal class ArticleServiceTest {
     fun should_find_article_by_id() {
         // given
         val id = faker.number().randomNumber()
-        every { articleRepository.findById(id) } returns Optional.empty()
+        every { articleRepository.findById(id) } returns Optional.of(mockkClass(Article::class))
 
         // when
         val article = sut.findById(id)
 
         // then
-        assertThat(article).isNull()
+        assertThat(article).isNotNull
         verify(exactly = 1) { articleRepository.findById(id) }
     }
 
     @Test
-    fun should_throw_ResourceNotFoundException_if_article_id_does_not_exists() {
+    fun should_throw_ResourceNotFoundException_if_find_no_article_by_id() {
+        // given
+        val id = faker.number().randomNumber()
+        every { articleRepository.findById(id) } returns Optional.empty()
+
+        // when, then
+        assertThrows<ResourceNotFoundException> {
+            sut.findById(id)
+        }
+            .also {
+                assertThat(it.message).isEqualTo(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
+            }
+    }
+
+    @Test
+    fun should_throw_ResourceNotFoundException_if_update_article_not_found() {
         // given
         val id = faker.number().randomNumber()
         val subject = faker.lorem().characters()
@@ -99,16 +115,15 @@ internal class ArticleServiceTest {
     }
 
     @Test
-    fun should_throw_ResourceNotFoundException_when_new_subject_is_blank() {
+    fun should_throw_InvalidException_when_new_subject_is_blank() {
         // given
         val id = faker.number().randomNumber()
-        every { articleRepository.findById(id) } returns
-                Optional.of(Article(faker.lorem().characters(), faker.lorem().characters()))
+        every { articleRepository.findById(id) } returns Optional.of(mockkClass(Article::class))
         val newSubject = " ".repeat((1..9).random())
         val newContent = faker.lorem().characters()
 
         // when, then
-        assertThrows<ResourceNotFoundException> {
+        assertThrows<InvalidException> {
             sut.updateArticle(id, UpdateArticleDto(newSubject, newContent))
         }
             .also {
