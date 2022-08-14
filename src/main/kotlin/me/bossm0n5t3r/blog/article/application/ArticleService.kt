@@ -18,7 +18,9 @@ class ArticleService(
     }
 
     fun findById(id: Long): Article? {
-        return articleRepository.findById(id).orElse(null)
+        return articleRepository.findById(id).orElseThrow {
+            ResourceNotFoundException(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
+        }
     }
 
     fun updateArticle(id: Long, dto: UpdateArticleDto) {
