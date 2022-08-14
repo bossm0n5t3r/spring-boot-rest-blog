@@ -24,6 +24,25 @@ internal class ArticleServiceTest {
     private val faker = CommonUtil.faker
 
     @Test
+    fun should_find_all_articles() {
+        // given
+        val dummyArticles = (1..3).map {
+            Article(faker.lorem().characters(), faker.lorem().characters())
+        }
+        every { articleRepository.findAll() } returns dummyArticles
+
+        // when
+        val result = sut.findAll()
+
+        // then
+        assertThat(result).isNotEmpty.hasSize(dummyArticles.size)
+        assertThat(result.map { it.subject })
+            .containsExactlyInAnyOrderElementsOf(dummyArticles.map { it.subject })
+        assertThat(result.map { it.content })
+            .containsExactlyInAnyOrderElementsOf(dummyArticles.map { it.content })
+    }
+
+    @Test
     fun should_throw_InvalidException_if_subject_is_blank() {
         // given
         val blankSubjectDto = CreateArticleDto(" ".repeat((1..9).random()), faker.lorem().characters())
@@ -72,7 +91,8 @@ internal class ArticleServiceTest {
     fun should_find_article_by_id() {
         // given
         val id = faker.number().randomNumber()
-        every { articleRepository.findById(id) } returns Optional.of(mockkClass(Article::class))
+        every { articleRepository.findById(id) } returns
+            Optional.of(Article(faker.lorem().characters(), faker.lorem().characters()))
 
         // when
         val article = sut.findById(id)
