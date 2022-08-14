@@ -22,7 +22,7 @@ class Article(
     @Column(name = "recommend", nullable = false)
     var recommend: Int = 0,
 ) : BaseEntity<Long>() {
-    constructor(dto: CreateArticleDto): this(
+    constructor(dto: CreateArticleDto) : this(
         subject = dto.subject,
         content = dto.content
     )
