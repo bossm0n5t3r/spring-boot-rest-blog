@@ -21,8 +21,8 @@ class ArticleService(
         return articleRepository.findById(id).orElse(null)
     }
 
-    fun updateArticle(dto: UpdateArticleDto) {
-        val article = articleRepository.findById(dto.id).orElseThrow {
+    fun updateArticle(id: Long, dto: UpdateArticleDto) {
+        val article = articleRepository.findById(id).orElseThrow {
             ResourceNotFoundException(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
         }
         dto.validate()

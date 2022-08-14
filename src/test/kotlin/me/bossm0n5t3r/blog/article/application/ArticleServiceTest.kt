@@ -91,7 +91,7 @@ internal class ArticleServiceTest {
 
         // when, then
         assertThrows<ResourceNotFoundException> {
-            sut.updateArticle(UpdateArticleDto(id, subject, content))
+            sut.updateArticle(id, UpdateArticleDto(subject, content))
         }
             .also {
                 assertThat(it.message).isEqualTo(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
@@ -109,7 +109,7 @@ internal class ArticleServiceTest {
 
         // when, then
         assertThrows<ResourceNotFoundException> {
-            sut.updateArticle(UpdateArticleDto(id, newSubject, newContent))
+            sut.updateArticle(id, UpdateArticleDto(newSubject, newContent))
         }
             .also {
                 assertThat(it.message).isEqualTo(ErrorMessage.SUBJECT_IS_BLANK.message)
@@ -127,7 +127,7 @@ internal class ArticleServiceTest {
         val newContent = ""
 
         // when
-        assertDoesNotThrow { sut.updateArticle(UpdateArticleDto(id, newSubject, newContent)) }
+        assertDoesNotThrow { sut.updateArticle(id, UpdateArticleDto(newSubject, newContent)) }
 
         // then
         verify(exactly = 1) { articleRepository.findById(id) }
