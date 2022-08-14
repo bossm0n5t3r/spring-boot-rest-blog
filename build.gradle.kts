@@ -37,6 +37,9 @@ dependencies {
     // MockK
     testImplementation("io.mockk:mockk:1.12.5")
 
+    // SpringMockK
+    testImplementation("com.ninja-squad:springmockk:3.1.1")
+
     // Java Faker
     testImplementation("com.github.javafaker:javafaker:1.0.2") {
         // https://github.com/DiUS/java-faker/issues/733
