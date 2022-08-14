@@ -8,7 +8,7 @@ import io.mockk.mockkClass
 import io.mockk.verify
 import me.bossm0n5t3r.blog.article.application.ArticleService
 import me.bossm0n5t3r.blog.article.application.dto.UpdateArticleDto
-import me.bossm0n5t3r.blog.article.domain.Article
+import me.bossm0n5t3r.blog.article.presentation.dto.ArticleDto
 import me.bossm0n5t3r.blog.common.CommonUtil
 import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
@@ -49,7 +49,8 @@ internal class ArticleControllerTest {
     @Test
     fun should_404_response_if_request_wrong_article_id() {
         val wrongArticleId = faker.number().randomNumber()
-        every { articleService.findById(wrongArticleId) } returns null
+        every { articleService.findById(wrongArticleId) } throws
+            ResourceNotFoundException(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
 
         mockMvc.perform(
             get("/articles/$wrongArticleId")
@@ -62,7 +63,7 @@ internal class ArticleControllerTest {
     @Test
     fun should_200_response_if_request_valid_article_id() {
         val validArticleId = faker.number().randomNumber()
-        every { articleService.findById(validArticleId) } returns mockkClass(Article::class)
+        every { articleService.findById(validArticleId) } returns mockkClass(ArticleDto::class)
 
         mockMvc.perform(
             get("/articles/$validArticleId")
@@ -77,7 +78,7 @@ internal class ArticleControllerTest {
         val articleId = faker.number().randomNumber()
         val dto = UpdateArticleDto(subject = null, content = faker.lorem().characters())
         every { articleService.updateArticle(articleId, dto) } throws
-                ResourceNotFoundException(ErrorMessage.SUBJECT_IS_BLANK.message)
+            ResourceNotFoundException(ErrorMessage.SUBJECT_IS_BLANK.message)
 
         mockMvc.perform(
             put("/articles/$articleId")
