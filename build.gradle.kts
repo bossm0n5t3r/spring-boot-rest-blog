@@ -27,6 +27,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+
+    implementation("commons-codec:commons-codec:1.15")
+    implementation("com.google.guava:guava:31.1-jre")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mariadb")
