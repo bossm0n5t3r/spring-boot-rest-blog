@@ -2,7 +2,10 @@ package me.bossm0n5t3r.blog.comment.application
 
 import me.bossm0n5t3r.blog.article.domain.ArticleRepository
 import me.bossm0n5t3r.blog.comment.application.dto.CommentDto
+import me.bossm0n5t3r.blog.comment.domain.Comment
 import me.bossm0n5t3r.blog.comment.domain.CommentRepository
+import me.bossm0n5t3r.blog.common.exception.ErrorMessage
+import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,22 +14,30 @@ class CommentService(
     private val commentRepository: CommentRepository,
 ) {
     fun findAllCommentsByArticleId(articleId: Long): List<CommentDto> {
-        TODO("Not yet implemented")
+        return commentRepository.findAllByArticleId(articleId).map { it.toDto() }
     }
 
     fun createComment(articleId: Long, dto: CommentDto) {
-        TODO("Not yet implemented")
+        val article = articleRepository.findById(articleId).orElseThrow {
+            ResourceNotFoundException(ErrorMessage.NOT_FOUND_ARTICLE_BY_ID.message)
+        }
+        dto.validate()
+        commentRepository.save(Comment(dto.content, article))
     }
 
     fun findByArticleIdAndCommentId(articleId: Long, commentId: Long): CommentDto {
-        TODO("Not yet implemented")
+        return commentRepository.findByArticleIdAndId(articleId, commentId)?.toDto()
+            ?: throw ResourceNotFoundException(ErrorMessage.NOT_FOUND_COMMENT.message)
     }
 
     fun updateComment(articleId: Long, commentId: Long, dto: CommentDto) {
-        TODO("Not yet implemented")
+        val comment = commentRepository.findByArticleIdAndId(articleId, commentId)
+            ?: throw ResourceNotFoundException(ErrorMessage.NOT_FOUND_COMMENT.message)
+        dto.validate()
+        comment.updateComment(dto)
     }
 
     fun deleteByArticleIdAndCommentId(articleId: Long, commentId: Long) {
-        TODO("Not yet implemented")
+        commentRepository.deleteByArticleIdAndId(articleId, commentId)
     }
 }
