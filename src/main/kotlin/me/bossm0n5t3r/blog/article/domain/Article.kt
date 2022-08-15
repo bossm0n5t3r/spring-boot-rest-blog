@@ -19,7 +19,7 @@ class Article(
     @Column(name = "hits", nullable = false, updatable = true)
     var hits: Int = 0,
 
-    @Column(name = "recommend", nullable = false)
+    @Column(name = "recommend", nullable = false, updatable = true)
     var recommend: Int = 0,
 ) : BaseEntity<Long>() {
     constructor(dto: CreateArticleDto) : this(
