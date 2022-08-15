@@ -10,4 +10,3 @@ data class CommentDto(
         if (content.isBlank()) throw InvalidException(ErrorMessage.CONTENT_IS_BLANK.message)
     }
 }
-
