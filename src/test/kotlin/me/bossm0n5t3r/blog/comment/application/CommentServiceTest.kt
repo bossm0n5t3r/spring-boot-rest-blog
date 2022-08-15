@@ -80,8 +80,9 @@ internal class CommentServiceTest {
         // given
         val articleId = faker.number().randomNumber()
         val dto = CommentDto(faker.lorem().characters())
-        every { articleRepository.findById(articleId) } returns Optional.of(mockkClass(Article::class))
-        justRun { commentRepository.save(any()) }
+        val mockArticle = mockkClass(Article::class)
+        every { articleRepository.findById(articleId) } returns Optional.of(mockArticle)
+        every { commentRepository.save(any()) } returns mockkClass(Comment::class)
 
         // when
         assertDoesNotThrow { sut.createComment(articleId, dto) }
@@ -113,7 +114,9 @@ internal class CommentServiceTest {
         // given
         val articleId = faker.number().randomNumber()
         val commentId = faker.number().randomNumber()
-        every { commentRepository.findByArticleIdAndId(articleId, commentId) } returns mockkClass(Comment::class)
+        val mockComment = mockkClass(Comment::class)
+        every { commentRepository.findByArticleIdAndId(articleId, commentId) } returns mockComment
+        every { mockComment.content } returns faker.lorem().characters()
 
         // when
         val comment = assertDoesNotThrow { sut.findByArticleIdAndCommentId(articleId, commentId) }
@@ -163,7 +166,9 @@ internal class CommentServiceTest {
         val articleId = faker.number().randomNumber()
         val commentId = faker.number().randomNumber()
         val dto = CommentDto(faker.lorem().characters())
-        every { commentRepository.findByArticleIdAndId(articleId, commentId) } returns mockkClass(Comment::class)
+        val mockComment = mockkClass(Comment::class)
+        every { commentRepository.findByArticleIdAndId(articleId, commentId) } returns mockComment
+        justRun { mockComment.updateComment(dto) }
 
         // when
         assertDoesNotThrow { sut.updateComment(articleId, commentId, dto) }
