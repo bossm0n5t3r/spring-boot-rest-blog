@@ -66,6 +66,26 @@ class CommentRepositoryTest {
     }
 
     @Test
+    fun should_find_all_by_article_id() {
+        // given
+        val comments = (1..3).map {
+            val content = faker.lorem().characters()
+            val article = getArticle()
+            Comment(content, article)
+                .also { entityManager.persist(it) }
+        }
+        val articleIds = comments.mapNotNull { it.article.id }
+        val selectedArticleId = articleIds.random()
+
+        // when
+        val allCommentByArticleId = sut.findAllByArticleId(selectedArticleId)
+
+        // then
+        assertThat(allCommentByArticleId)
+            .containsExactlyInAnyOrderElementsOf(comments.filter { it.article.id == selectedArticleId })
+    }
+
+    @Test
     fun should_update_comment() {
         // given
         val content = faker.lorem().characters()
