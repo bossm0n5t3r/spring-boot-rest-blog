@@ -1,7 +1,7 @@
 package me.bossm0n5t3r.blog.comment.domain
 
 import me.bossm0n5t3r.blog.article.domain.Article
-import me.bossm0n5t3r.blog.comment.application.dto.UpdateCommentDto
+import me.bossm0n5t3r.blog.comment.application.dto.CommentDto
 import me.bossm0n5t3r.blog.common.CommonUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -76,7 +76,7 @@ class CommentRepositoryTest {
         assertNotEquals(content, newContent)
 
         // when
-        comment.updateComment(UpdateCommentDto(content = newContent))
+        comment.updateComment(CommentDto(content = newContent))
 
         // then
         val optionalNewComment = sut.findById(article.id!!)
