@@ -170,4 +170,19 @@ class CommentRepositoryTest {
         // then
         assertThat(sut.findAll()).isEmpty()
     }
+
+    @Test
+    fun should_delete_by_article_id_and_comment_id() {
+        // given
+        val content = faker.lorem().characters()
+        val article = getArticle()
+        val comment = sut.save(Comment(content, article))
+        assertThat(sut.findAll()).isNotEmpty
+
+        // when
+        sut.deleteByArticleIdAndId(articleId = article.id ?: 0L, id = comment.id ?: 0L)
+
+        // then
+        assertThat(sut.findAll()).isEmpty()
+    }
 }
