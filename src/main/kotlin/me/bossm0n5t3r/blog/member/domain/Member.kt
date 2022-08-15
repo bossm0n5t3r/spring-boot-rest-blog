@@ -17,7 +17,7 @@ class Member(
 
     @Column(name = "name", nullable = false, updatable = true)
     var name: String
-) : BaseEntity<Int>() {
+) : BaseEntity<Long>() {
     @Column(name = "password", nullable = false, updatable = true)
     var password: String = encryptPassword(email, password, name)
 
