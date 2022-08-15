@@ -86,6 +86,54 @@ class CommentRepositoryTest {
     }
 
     @Test
+    fun should_find_null_by_article_id_and_id_if_article_or_comment_not_found() {
+        // given
+        val content = faker.lorem().characters()
+        val article = getArticle()
+        val comment = entityManager.persist(Comment(content, article))
+
+        val wrongArticleId = (1L..9L)
+            .filterNot { it == article.id }
+            .random()
+        val wrongCommentId = (1L..9L)
+            .filterNot { it == comment.id }
+            .random()
+
+        // when
+        val foundCommentByWrongArticleId = sut.findByArticleIdAndId(
+            articleId = wrongArticleId,
+            id = comment.id ?: 0L
+        )
+        val foundCommentByWrongCommentId = sut.findByArticleIdAndId(
+            articleId = article.id ?: 0L,
+            id = wrongCommentId
+        )
+
+        // then
+        assertThat(foundCommentByWrongArticleId).isNull()
+        assertThat(foundCommentByWrongCommentId).isNull()
+    }
+
+    @Test
+    fun should_find_by_article_id_and_id() {
+        // given
+        val content = faker.lorem().characters()
+        val article = getArticle()
+        val comment = entityManager.persist(Comment(content, article))
+
+        // when
+        val foundComment = sut.findByArticleIdAndId(
+            articleId = article.id ?: 0L,
+            id = comment.id ?: 0L
+        )
+
+        // then
+        assertThat(foundComment)
+            .isNotNull
+            .isEqualTo(comment)
+    }
+
+    @Test
     fun should_update_comment() {
         // given
         val content = faker.lorem().characters()
