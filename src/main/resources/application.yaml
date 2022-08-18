@@ -7,3 +7,6 @@ spring:
     url: jdbc:mariadb://localhost:33062/spring_boot_rest_blog_dev
     username: dev
     password: dev
+  redis:
+    host: localhost
+    port: 63790
