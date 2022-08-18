@@ -44,4 +44,9 @@ class ArticleController(
         articleService.deleteById(articleId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
+
+    @GetMapping("/articles/recent")
+    fun getRecentArticles(): List<ArticleDto> {
+        return articleService.getRecentArticles()
+    }
 }

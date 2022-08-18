@@ -154,4 +154,15 @@ internal class ArticleControllerTest {
             .andExpect(status().isNoContent)
         verify(exactly = 1) { articleService.deleteById(articleId) }
     }
+
+    @Test
+    fun should_200_response_when_get_recent_articles() {
+        every { articleService.getRecentArticles() } returns emptyList()
+
+        mockMvc.perform(
+            get("/articles/recent")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
+    }
 }
