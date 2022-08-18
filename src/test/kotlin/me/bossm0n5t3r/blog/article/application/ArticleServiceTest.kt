@@ -1,5 +1,6 @@
 package me.bossm0n5t3r.blog.article.application
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockkClass
@@ -16,11 +17,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.springframework.data.redis.core.StringRedisTemplate
 import java.util.Optional
 
 internal class ArticleServiceTest {
     private val articleRepository = mockkClass(ArticleRepository::class)
-    private val sut = ArticleService(articleRepository)
+    private val mockRedisTemplate = mockkClass(StringRedisTemplate::class)
+    private val mockObjectMapper = mockkClass(ObjectMapper::class)
+    private val sut = ArticleService(articleRepository, mockRedisTemplate, mockObjectMapper)
     private val faker = CommonUtil.faker
 
     @Test
