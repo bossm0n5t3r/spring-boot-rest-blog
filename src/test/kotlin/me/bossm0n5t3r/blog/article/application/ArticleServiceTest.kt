@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockkClass
 import io.mockk.verify
-import me.bossm0n5t3r.blog.article.application.dto.CreateArticleDto
 import me.bossm0n5t3r.blog.article.application.dto.UpdateArticleDto
 import me.bossm0n5t3r.blog.article.domain.Article
 import me.bossm0n5t3r.blog.article.domain.ArticleRepository
@@ -44,51 +43,6 @@ internal class ArticleServiceTest {
             .containsExactlyInAnyOrderElementsOf(dummyArticles.map { it.subject })
         assertThat(result.map { it.content })
             .containsExactlyInAnyOrderElementsOf(dummyArticles.map { it.content })
-    }
-
-    @Test
-    fun should_throw_InvalidException_if_subject_is_blank() {
-        // given
-        val blankSubjectDto = CreateArticleDto(" ".repeat((1..9).random()), faker.lorem().characters())
-
-        // when, then
-        assertThrows<InvalidException> {
-            sut.createArticle(blankSubjectDto)
-        }
-            .also {
-                assertThat(it.message).isEqualTo(ErrorMessage.SUBJECT_IS_BLANK.message)
-            }
-        verify(exactly = 0) { articleRepository.save(any()) }
-    }
-
-    @Test
-    fun should_throw_InvalidException_if_content_is_empty() {
-        // given
-        val emptyContentDto = CreateArticleDto(faker.lorem().characters(), "")
-
-        // when, then
-        assertThrows<InvalidException> {
-            sut.createArticle(emptyContentDto)
-        }
-            .also {
-                assertThat(it.message).isEqualTo(ErrorMessage.CONTENT_IS_BLANK.message)
-            }
-        verify(exactly = 0) { articleRepository.save(any()) }
-    }
-
-    @Test
-    fun should_create_article() {
-        // given
-        val subject = faker.lorem().characters()
-        val content = faker.lorem().characters()
-        val article = Article(subject, content)
-        every { articleRepository.save(article) } returns article
-
-        // when
-        assertDoesNotThrow { sut.createArticle(CreateArticleDto(subject, content)) }
-
-        // then
-        verify(exactly = 1) { articleRepository.save(article) }
     }
 
     @Test
