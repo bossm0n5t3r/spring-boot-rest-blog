@@ -7,7 +7,6 @@ import me.bossm0n5t3r.blog.article.domain.Article
 import me.bossm0n5t3r.blog.article.domain.ArticleRepository
 import me.bossm0n5t3r.blog.article.presentation.dto.ArticleDto
 import me.bossm0n5t3r.blog.common.configuration.Constants.RecentArticles
-import me.bossm0n5t3r.blog.common.configuration.readValueWithTypeReference
 import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -47,19 +46,19 @@ class ArticleService(
     }
 
     fun getRecentArticles(): List<ArticleDto> {
-        val readOpsForValue = stringRedisTemplate.opsForValue()
-        val recentArticlesInRedis = readOpsForValue.get(RecentArticles.RedisKey)
-        return if (recentArticlesInRedis != null) {
-            objectMapper.readValueWithTypeReference(recentArticlesInRedis)
+        val readOpsForList = stringRedisTemplate.opsForList()
+        val recentArticlesInRedis =
+            readOpsForList.range(RecentArticles.RedisKey, 0, -1) ?: emptyList()
+        return if (recentArticlesInRedis.isNotEmpty()) {
+            recentArticlesInRedis.map { objectMapper.readValue(it, ArticleDto::class.java) }
         } else {
             articleRepository.findAllByOrderByCreatedAtDesc()
                 .take(RecentArticles.MAX_RECENT_ARTICLES_COUNT)
                 .map { it.toDto() }
                 .also {
-                    readOpsForValue.set(
+                    readOpsForList.rightPushAll(
                         RecentArticles.RedisKey,
-                        objectMapper.writeValueAsString(it),
-                        RecentArticles.TIMEOUT,
+                        it.map { dto -> objectMapper.writeValueAsString(dto) }
                     )
                 }
         }

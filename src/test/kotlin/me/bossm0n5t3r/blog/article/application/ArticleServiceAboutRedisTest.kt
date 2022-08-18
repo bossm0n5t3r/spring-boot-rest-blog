@@ -10,7 +10,6 @@ import me.bossm0n5t3r.blog.common.CommonUtil
 import me.bossm0n5t3r.blog.common.configuration.Constants.RecentArticles
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.Duration
 import javax.annotation.PostConstruct
 
 internal class ArticleServiceAboutRedisTest : AbstractRedisTest() {
@@ -28,12 +27,14 @@ internal class ArticleServiceAboutRedisTest : AbstractRedisTest() {
     @Test
     fun should_get_recent_articles_from_db_when_not_exist_in_redis() {
         // given
-        val readOpsForValue = stringRedisTemplate.opsForValue()
+        val readOpsForList = stringRedisTemplate.opsForList()
         val dummyArticles = (1..3).map {
             Article(faker.lorem().characters(), faker.lorem().characters())
         }
         every { articleRepository.findAllByOrderByCreatedAtDesc() } returns dummyArticles
-        assertThat(readOpsForValue.get(RecentArticles.RedisKey)).isNull()
+        assertThat(readOpsForList.range(RecentArticles.RedisKey, 0, -1))
+            .isNotNull
+            .isEmpty()
 
         // when
         val result = sut.getRecentArticles()
@@ -45,22 +46,22 @@ internal class ArticleServiceAboutRedisTest : AbstractRedisTest() {
         assertThat(result.map { it.content })
             .containsExactlyElementsOf(dummyArticles.map { it.content })
         verify(exactly = 1) { articleRepository.findAllByOrderByCreatedAtDesc() }
-        assertThat(readOpsForValue.get(RecentArticles.RedisKey)).isNotNull
+        assertThat(readOpsForList.range(RecentArticles.RedisKey, 0, -1)).isNotNull
     }
 
     @Test
     fun should_get_recent_articles_from_redis_when_exist_in_redis() {
         // given
-        val readOpsForValue = stringRedisTemplate.opsForValue()
+        val readOpsForList = stringRedisTemplate.opsForList()
         val dummyArticles = (1..3).map {
             Article(faker.lorem().characters(), faker.lorem().characters())
+        }.also {
+            readOpsForList.rightPushAll(
+                RecentArticles.RedisKey,
+                it.map { article -> objectMapper.writeValueAsString(article.toDto()) },
+            )
         }
-        readOpsForValue.set(
-            RecentArticles.RedisKey,
-            objectMapper.writeValueAsString(dummyArticles.map { it.toDto() }),
-            Duration.ofHours(1L)
-        )
-        assertThat(readOpsForValue.get(RecentArticles.RedisKey)).isNotNull
+        assertThat(readOpsForList.range(RecentArticles.RedisKey, 0, -1)).isNotNull.isNotEmpty
 
         // when
         val result = sut.getRecentArticles()
