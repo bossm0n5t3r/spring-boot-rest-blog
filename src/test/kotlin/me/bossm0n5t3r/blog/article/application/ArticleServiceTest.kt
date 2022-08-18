@@ -1,6 +1,7 @@
 package me.bossm0n5t3r.blog.article.application
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockkClass
@@ -13,6 +14,7 @@ import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.InvalidException
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -25,6 +27,11 @@ internal class ArticleServiceTest {
     private val mockObjectMapper = mockkClass(ObjectMapper::class)
     private val sut = ArticleService(articleRepository, mockRedisTemplate, mockObjectMapper)
     private val faker = CommonUtil.faker
+
+    @AfterEach
+    fun clearMock() {
+        clearAllMocks()
+    }
 
     @Test
     fun should_find_all_articles() {
