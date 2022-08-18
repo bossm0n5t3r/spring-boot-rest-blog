@@ -24,7 +24,20 @@ class ArticleService(
 
     fun createArticle(dto: CreateArticleDto) {
         dto.validate()
-        articleRepository.save(Article(dto))
+        val article = Article(dto)
+        articleRepository.save(article)
+
+        val readOpsForList = stringRedisTemplate.opsForList()
+        val recentArticlesInRedis =
+            readOpsForList.range(RecentArticles.RedisKey, 0, -1) ?: emptyList()
+        if (recentArticlesInRedis.isEmpty()) {
+            readOpsForList.rightPush(RecentArticles.RedisKey, objectMapper.writeValueAsString(article.toDto()))
+        } else {
+            if (recentArticlesInRedis.size >= RecentArticles.MAX_RECENT_ARTICLES_COUNT) {
+                readOpsForList.rightPop(RecentArticles.RedisKey)
+            }
+            readOpsForList.leftPush(RecentArticles.RedisKey, objectMapper.writeValueAsString(article.toDto()))
+        }
     }
 
     fun findById(id: Long): ArticleDto {
