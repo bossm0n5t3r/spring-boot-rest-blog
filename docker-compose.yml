@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  spring_batch_database:
+  spring_boot_rest_blog_database:
     container_name: blog_database
     image: mariadb
     environment:
@@ -9,3 +9,14 @@ services:
       MARIADB_ROOT_HOST: '%'
     ports:
       - "33062:3306"
+  spring_boot_rest_blog_redis:
+    container_name: blog_redis
+    image: redis:latest
+    ports:
+      - "63790:6379"
+    command: redis-server --loglevel warning --requirepass C8v8pY3@55Pe
+    volumes:
+        - cache:/data
+volumes:
+  cache:
+    driver: local
