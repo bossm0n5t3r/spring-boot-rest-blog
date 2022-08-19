@@ -31,6 +31,8 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.google.guava:guava:31.1-jre")
 
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.10")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mariadb")

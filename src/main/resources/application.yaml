@@ -10,3 +10,9 @@ spring:
   redis:
     host: localhost
     port: 63790
+
+springdoc:
+  swagger-ui:
+    path: index.html
+  paths-to-match:
+    - /articles/**
