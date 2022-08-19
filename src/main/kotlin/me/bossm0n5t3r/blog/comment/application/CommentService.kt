@@ -7,7 +7,9 @@ import me.bossm0n5t3r.blog.comment.domain.CommentRepository
 import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @Service
 class CommentService(
     private val articleRepository: ArticleRepository,

@@ -11,7 +11,9 @@ import me.bossm0n5t3r.blog.common.exception.ErrorMessage
 import me.bossm0n5t3r.blog.common.exception.ResourceNotFoundException
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
+@Transactional
 @Service
 class ArticleService(
     private val articleRepository: ArticleRepository,
