@@ -28,15 +28,11 @@ class ArticleService(
         articleRepository.save(article)
 
         val readOpsForList = stringRedisTemplate.opsForList()
+        readOpsForList.leftPush(RecentArticles.RedisKey, objectMapper.writeValueAsString(article.toDto()))
         val recentArticlesInRedis =
             readOpsForList.range(RecentArticles.RedisKey, 0, -1) ?: emptyList()
-        if (recentArticlesInRedis.isEmpty()) {
-            readOpsForList.rightPush(RecentArticles.RedisKey, objectMapper.writeValueAsString(article.toDto()))
-        } else {
-            if (recentArticlesInRedis.size >= RecentArticles.MAX_RECENT_ARTICLES_COUNT) {
-                readOpsForList.rightPop(RecentArticles.RedisKey)
-            }
-            readOpsForList.leftPush(RecentArticles.RedisKey, objectMapper.writeValueAsString(article.toDto()))
+        if (recentArticlesInRedis.size > RecentArticles.MAX_RECENT_ARTICLES_COUNT) {
+            readOpsForList.rightPop(RecentArticles.RedisKey)
         }
     }
 
