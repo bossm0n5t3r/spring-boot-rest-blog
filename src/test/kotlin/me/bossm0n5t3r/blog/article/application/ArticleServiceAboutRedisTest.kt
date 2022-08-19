@@ -145,7 +145,7 @@ internal class ArticleServiceAboutRedisTest : AbstractRedisTest() {
         assertThat(result.map { it.content })
             .containsExactlyElementsOf(dummyArticles.map { it.content })
         verify(exactly = 1) { articleRepository.findAllByOrderByCreatedAtDesc() }
-        assertThat(readOpsForList.range(RecentArticles.RedisKey, 0, -1)).isNotNull
+        assertThat(readOpsForList.range(RecentArticles.RedisKey, 0, -1)).isNotNull.isNotEmpty
     }
 
     @Test
