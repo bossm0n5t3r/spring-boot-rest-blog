@@ -17,6 +17,12 @@ repositories {
     mavenCentral()
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
 extra["testcontainersVersion"] = "1.17.3"
 
 dependencies {
