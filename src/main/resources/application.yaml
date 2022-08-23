@@ -10,6 +10,7 @@ spring:
   redis:
     host: localhost
     port: 63790
+    password: C8v8pY3@55Pe
 
 springdoc:
   swagger-ui:
