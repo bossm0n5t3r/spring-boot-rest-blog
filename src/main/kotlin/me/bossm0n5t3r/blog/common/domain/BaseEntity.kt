@@ -23,11 +23,11 @@ abstract class BaseEntity<ID : Serializable> : Serializable {
     val id: ID? = null
 
     @CreatedDate
-    var createdAt: LocalDateTime? = null
+    var createdAt: LocalDateTime = LocalDateTime.now()
         protected set
 
     @LastModifiedDate
-    var updatedAt: LocalDateTime? = null
+    var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
 
     override fun equals(other: Any?): Boolean {
