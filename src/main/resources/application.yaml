@@ -11,6 +11,11 @@ spring:
     host: localhost
     port: 63790
     password: C8v8pY3@55Pe
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: spring_boot_rest_blog
+    bootstrap-servers: localhost:9092
 
 springdoc:
   swagger-ui:
