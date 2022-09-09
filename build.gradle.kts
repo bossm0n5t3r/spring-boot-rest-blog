@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.7.2"
+    id("org.springframework.boot") version "2.7.3"
     id("io.spring.dependency-management") version "1.0.12.RELEASE"
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
+    kotlin("jvm") version "1.7.10"
+    kotlin("plugin.spring") version "1.7.10"
+    kotlin("plugin.jpa") version "1.7.10"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 }
 
@@ -37,7 +37,10 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.google.guava:guava:31.1-jre")
 
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.10")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
+
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter")
@@ -47,7 +50,7 @@ dependencies {
     testImplementation("com.h2database:h2")
 
     // MockK
-    testImplementation("io.mockk:mockk:1.12.5")
+    testImplementation("io.mockk:mockk:1.12.7")
 
     // SpringMockK
     testImplementation("com.ninja-squad:springmockk:3.1.1")
