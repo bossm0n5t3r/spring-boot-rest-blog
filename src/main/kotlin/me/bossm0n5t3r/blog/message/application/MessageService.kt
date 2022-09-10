@@ -1,7 +1,7 @@
-package me.bossm0n5t3r.blog.test.application
+package me.bossm0n5t3r.blog.message.application
 
 import me.bossm0n5t3r.blog.common.configuration.Constants
-import me.bossm0n5t3r.blog.test.presentation.Message
+import me.bossm0n5t3r.blog.message.presentation.dto.Message
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service
 import org.springframework.util.concurrent.ListenableFutureCallback
 
 @Service
-class KafkaService(
+class MessageService(
     private val kafkaTemplate: KafkaTemplate<String, String>,
 ) {
-    fun sendMessage(msg: Message) {
-        kafkaTemplate.send(Constants.Kafka.TOPIC_BLOG_MESSAGE, msg.content)
+    fun sendMessage(topic: String, msg: Message) {
+        kafkaTemplate.send(topic, msg.content)
             .also {
                 it.addCallback(object : ListenableFutureCallback<SendResult<String, String>> {
                     override fun onSuccess(result: SendResult<String, String>?) {
