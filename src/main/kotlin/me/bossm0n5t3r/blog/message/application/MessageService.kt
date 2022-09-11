@@ -1,7 +1,7 @@
 package me.bossm0n5t3r.blog.message.application
 
 import me.bossm0n5t3r.blog.common.configuration.Constants
-import me.bossm0n5t3r.blog.message.presentation.dto.Message
+import me.bossm0n5t3r.blog.message.presentation.dto.MessageDto
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
@@ -13,16 +13,17 @@ import org.springframework.util.concurrent.ListenableFutureCallback
 class MessageService(
     private val kafkaTemplate: KafkaTemplate<String, String>,
 ) {
-    fun sendMessage(topic: String, msg: Message) {
-        kafkaTemplate.send(topic, msg.content)
+    fun sendMessage(messageDto: MessageDto) {
+        val (topic, message) = messageDto
+        kafkaTemplate.send(topic, message)
             .also {
                 it.addCallback(object : ListenableFutureCallback<SendResult<String, String>> {
                     override fun onSuccess(result: SendResult<String, String>?) {
-                        println("Sent message=[${msg.content}] with offset=[${result!!.recordMetadata.offset()}]")
+                        println("Sent topic=[$topic] message=[$message] with offset=[${result!!.recordMetadata.offset()}]")
                     }
 
                     override fun onFailure(ex: Throwable) {
-                        println("Unable to send message=[${msg.content}] due to : ${ex.message}")
+                        println("Unable to send topic=[$topic] message=[$message] due to : ${ex.message}")
                     }
                 })
             }
