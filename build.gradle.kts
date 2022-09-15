@@ -39,9 +39,6 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
 
-    // kafka
-    implementation("org.springframework.kafka:spring-kafka")
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mariadb")
